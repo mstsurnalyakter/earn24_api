@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('deposites', function (Blueprint $table) {
             $table->id();
+            $table->string('amount');
+            $table->string('user_id');
+            $table->string('transaction_id');
+            $table->string('paymentMethod');
+            $table->string('aymentNumber');
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }
