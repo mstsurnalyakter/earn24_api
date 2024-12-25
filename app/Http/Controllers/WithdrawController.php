@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Validator;
 
 class WithdrawController extends Controller
 {
+
+    public function index(){
+        $withdraws = Withdraw::all();
+        return response()->json(['withdraws'=>$withdraws], 200);
+    }
     public function addWithdraw(Request $request){
         $rules=[
             'amount' => 'required|string',

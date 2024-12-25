@@ -28,3 +28,4 @@ Route::put('/deposits/{id}/status',[DepositInfoController::class,'updateStatus']
 
 // withdraw routes
 Route::post('add-withdraw',[WithdrawController::class,'addWithdraw']);
+Route::get('withdraws',[WithdrawController::class,'index']);
