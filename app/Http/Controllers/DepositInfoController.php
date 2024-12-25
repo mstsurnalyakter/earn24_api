@@ -41,4 +41,19 @@ class DepositInfoController extends Controller
 
         return response()->json(['message' => 'Deposit added successfully'], 201);
     }
+
+
+    public function updateStatus(Request $request, $id)
+    {
+        $deposit = DepositInfo::find($id);
+        if (!$deposit) {
+            return response()->json(['message' => 'Deposit not found'], 404);
+        }
+
+        $deposit->status = $request->status;
+        $deposit->save();
+
+        return response()->json(['message' => 'Deposit status updated successfully']);
+    }
+
 }
