@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('deposites', function (Blueprint $table) {
+        Schema::create('deposit_infos', function (Blueprint $table) {
             $table->id();
             $table->string('amount');
-            $table->string('user_id');
-            $table->string('transaction_id');
+            $table->string('userId');
+            $table->string('transactionId');
             $table->string('paymentMethod');
             $table->string('paymentNumber');
             $table->string('status')->default('pending');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('deposites');
+        Schema::dropIfExists('deposit_infos');
     }
 };
