@@ -5,54 +5,37 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class UsersAuthController extends Controller
 {
-    public function login(Request $request)
-    {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
+    public function login(Request $request){
+        Validator::make($request->all(), [
             'phone' => 'required|string',
-            'password' => 'required|string'
-        ]);
+            'password' => 'required|string',
+        ])->validate();
+        
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors(), 'success' => false], 400);
+        if (!Auth::attempt($request->only('phone', 'password'))) {
+            throw ValidationException::withMessages(['phone' => trans('auth.failed')]);
         }
 
-        $user = User::where('phone', $request->phone)->first();
-        if (!$user) {
-            return response()->json(['error' => 'User not found', 'success' => false], 404);
-        }
-
-        if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Incorrect password', 'success' => false], 401);
-        }
-
-        $success = [
-            'token' => $user->createToken('myApp')->plainTextToken,
-            'name' => $user->name
-        ];
-
+        // $request->session()->regenerate();
         return response()->json([
             'success' => true,
-            'result' => $success,
-            'message' => 'User logged in successfully'
+            'message' => 'Login successful.'
         ]);
     }
 
-    public function signup(Request $request)
-    {
+    public function signup(Request $request){
+        // Validate the request data
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|unique:users,phone|length:11',
-            'password' => 'required|string|min:6'
+            'name' => 'required',
+            'phone' => 'required',
+            'password' => 'required'
         ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors(), 'success' => false], 400);
-        }
 
         User::create([
             'name' => $request->name,
@@ -65,5 +48,7 @@ class UsersAuthController extends Controller
             'success' => true,
             'message' => 'Registration successful. Please log in.'
         ]);
+        
+      
     }
 }
