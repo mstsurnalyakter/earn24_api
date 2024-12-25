@@ -13,7 +13,7 @@ class WithdrawController extends Controller
             'amount' => 'required|string',
             'userId' => 'required|string',
             'paymentMethod' => 'required|string',
-            'paymentNumber' => 'required|string',
+            'paymentNumber' => ['required', 'string', 'regex:/^(?:\+88|88)?(01[3-9]\d{8})$/'],
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()){
