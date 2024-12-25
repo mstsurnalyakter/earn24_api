@@ -23,9 +23,12 @@ class UsersAuthController extends Controller
         }
 
         // $request->session()->regenerate();
+        $user = Auth::user();
+
         return response()->json([
             'success' => true,
-            'message' => 'Login successful.'
+            'message' => 'Login successful.',
+            'user' => $user
         ]);
     }
 
