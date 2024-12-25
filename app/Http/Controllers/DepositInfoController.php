@@ -8,6 +8,15 @@ use Illuminate\Support\Facades\Validator;
 
 class DepositInfoController extends Controller
 {
+    
+    // public function index(){
+    //     $deposits = DepositInfo::all();
+    //     return response()->json(['deposits' => $deposits], 200);
+    // }
+    public function index(){
+        $deposits = DepositInfo::all();
+        return response()->json(['deposits'=>$deposits], 200);
+    }
     public function addDeposit(Request $request){
         $rules=[
             'amount' => 'required|string',

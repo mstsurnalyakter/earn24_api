@@ -21,3 +21,4 @@ Route::controller(UsersAuthController::class)->group(function(){
 });
 
 Route::post('add-deposit',[DepositInfoController::class,'addDeposit']);
+Route::get('deposits',[DepositInfoController::class,'index']);
