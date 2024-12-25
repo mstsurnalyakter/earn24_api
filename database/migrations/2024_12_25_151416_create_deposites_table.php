@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('user_id');
             $table->string('transaction_id');
             $table->string('paymentMethod');
-            $table->string('aymentNumber');
+            $table->string('paymentNumber');
             $table->string('status')->default('pending');
             $table->timestamps();
         });

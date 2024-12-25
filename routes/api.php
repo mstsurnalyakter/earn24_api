@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DepositeController;
 use App\Http\Controllers\UsersAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,4 +16,5 @@ Route::post('login', [UsersAuthController::class, 'login']);
 
 Route::controller(UsersAuthController::class)->group(function(){
     Route::resource('admin', AdminController::class);
+    Route::resource('deposite', DepositeController::class);
 });
