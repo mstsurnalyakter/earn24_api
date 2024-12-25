@@ -9,33 +9,61 @@ use Illuminate\Support\Facades\Validator;
 
 class UsersAuthController extends Controller
 {
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required'
+            'phone' => 'required|string',
+            'password' => 'required|string'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'Invalid input', 'success' => false], 400);
+            return response()->json(['error' => $validator->errors(), 'success' => false], 400);
         }
 
-        $user = User::where("email", $request->email)->first();
-        if(!$user || !Hash::check($request->password, $user->password)){
-           return response()->json(['error'=>'Invalid credentials',"success"=>false],401);
+        $user = User::where('phone', $request->phone)->first();
+        if (!$user) {
+            return response()->json(['error' => 'User not found', 'success' => false], 404);
         }
 
-        $succes = ['token'=>$user->createToken('myApp')->plainTextToken];
-        $succes['name']=$user->name;
-        return ['success'=>'true','result'=>$succes,"message"=>"User created successfully"];
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Incorrect password', 'success' => false], 401);
+        }
+
+        $success = [
+            'token' => $user->createToken('myApp')->plainTextToken,
+            'name' => $user->name
+        ];
+
+        return response()->json([
+            'success' => true,
+            'result' => $success,
+            'message' => 'User logged in successfully'
+        ]);
     }
 
-    public function signup(Request $request){
-        $input = $request->input();
-        $input['password'] = bcrypt($input['password']);
-        $user=User::create($input);
-        $succes = ['token'=>$user->createToken('myApp')->plainTextToken];
-        $succes['name']=$user->name;
-        return ['success'=>'true','result'=>$succes,"message"=>"User created successfully"];
+    public function signup(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|unique:users,phone|length:11',
+            'password' => 'required|string|min:6'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors(), 'success' => false], 400);
+        }
+
+        User::create([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
+            'role' => 'user',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Registration successful. Please log in.'
+        ]);
     }
 }
